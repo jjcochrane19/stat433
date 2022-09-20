@@ -1,6 +1,6 @@
 ---
 title: "hw1"
-output: html_document
+output: md
 ---
 
 ```{r}
@@ -21,4 +21,16 @@ summary(flights)
 ```{r}
 flights%>%
   mutate(dep_time = ((dep_time - dep_time%%100)*.6) + dep_time%%100, sched_dep_time = ((sched_dep_time - sched_dep_time%%100)*.6) + sched_dep_time%%100)
+```
+
+# Question 3
+
+```{r}
+flights_plot = flights %>% group_by(month, day) %>% summarize(cancelled = sum(is.na(dep_delay)), n=n(), mean_delay = mean(dep_delay,na.rm=T))
+
+ggplot(flights_plot, aes(x = cancelled/n, y = mean_delay)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(se = F, color = "blue")+
+  xlab("Proportion of Flights Delayed") +
+  ylab("Average Delay in Minutes")
 ```
