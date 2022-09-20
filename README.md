@@ -1,3 +1,2 @@
-# stat433"A line I wrote on my local computer  " 
-"A line I wrote on my local computer  " 
-"what's up"
+# Question 1
+"8,255 flights are missing `dep_time`. Similarly, 8,255 flights are missing `dep_delay`, 8,713 are missing `arr_time`, 9,430 are missing `arr_delay`, and 9,430 are missing `air_time`. There could be many explanations for this, including flights that never took off, never landed, or were rerouted. Alternatively, it is very possible that mistakes were made in record keeping, resulting in imperfect data."
