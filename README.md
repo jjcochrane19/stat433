@@ -1,6 +1,6 @@
 ---
 title: "hw1"
-output: html_document
+output: md
 ---
 
 ```{r}
