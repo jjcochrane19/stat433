@@ -3,8 +3,9 @@ title: "hw1"
 output: html_document
 ---
 
+[My Github repo for Stat 433!](https://github.com/jjcochrane19/stat433)
+
 ```{r}
-install.packages("nycflights13")
 library(nycflights13)
 library(tidyverse)
 library(dplyr)
