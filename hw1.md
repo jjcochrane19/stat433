@@ -125,4 +125,4 @@ ggplot(flights_plot, aes(x = cancelled/n, y = mean_delay)) +
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](hw1_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->

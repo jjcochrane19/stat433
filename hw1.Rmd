@@ -1,6 +1,6 @@
 ---
 title: "hw1"
-output: html_document
+output: github_document
 ---
 
 [My Github repo for Stat 433!](https://github.com/jjcochrane19/stat433)
