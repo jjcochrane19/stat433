@@ -1,5 +1,6 @@
 hw1
 ================
+9/29/2022
 
 [My Github repo for Stat 433!](https://github.com/jjcochrane19/stat433)
 

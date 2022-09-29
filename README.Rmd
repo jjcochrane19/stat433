@@ -1,6 +1,8 @@
 ---
 title: "hw1"
-output: github_document
+name: "Josh Cochrane"
+date: "9/29/2022"
+output: html_document
 ---
 
 [My Github repo for Stat 433!](https://github.com/jjcochrane19/stat433)
