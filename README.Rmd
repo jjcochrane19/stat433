@@ -2,8 +2,10 @@
 title: "hw2"
 name: "Josh Cochrane"
 date: "10/18/2022"
-output: md_document
+output: html_document
 ---
+
+# HW 2
 
 [My Github repo for Stat 433!](https://github.com/jjcochrane19/stat433)
 

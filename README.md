@@ -1,3 +1,5 @@
+# HW 2
+
 [My Github repo for Stat 433!](https://github.com/jjcochrane19/stat433)
 
     library(nycflights13)
