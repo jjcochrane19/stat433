@@ -1,7 +1,7 @@
 ---
-title: "hw1"
+title: "hw2"
 name: "Josh Cochrane"
-date: "9/29/2022"
+date: "10/18/2022"
 output: html_document
 ---
 
@@ -13,28 +13,95 @@ library(tidyverse)
 library(dplyr)
 library(ggplot2)
 ```
-# Question 1.
-```{r}
-summary(flights)
-```
 
-8,255 flights are missing `dep_time`. Similarly, 8,255 flights are missing `dep_delay`, 8,713 are missing `arr_time`, 9,430 are missing `arr_delay`, and 9,430 are missing `air_time`. There could be many explanations for this, including flights that never took off, never landed, or were rerouted. Alternatively, it is very possible that mistakes were made in record keeping, resulting in imperfect data.
-
-# Question 2.
-```{r}
-flights%>%
-  mutate(dep_time = ((dep_time - dep_time%%100)*.6) + dep_time%%100, sched_dep_time = ((sched_dep_time - sched_dep_time%%100)*.6) + sched_dep_time%%100)
-```
-
-# Question 3
+In r4ds flights… What time of day should you fly if you want to avoid delays as much as possible? Does this choice depend on anything? Season? Weather? Airport? Airline? Find three patterns (“null results” are ok!). Write your results into Rmarkdown. Include a short introduction that summarizes the three results. Then, have a section for each finding. Support each finding with data summaries and visualizations. Include your code when necessary. This shouldn’t be long, but it might take some time to find the things you want to talk about and lay them out in an orderly way.
 
 ```{r}
-flights_plot = flights %>% group_by(month, day) %>% summarize(cancelled = sum(is.na(dep_delay)), n=n(), mean_delay = mean(dep_delay,na.rm=T))
+hw_df = flights %>%
+  select(month, sched_dep_time, dep_delay, origin, carrier) %>%
+  mutate(dep_delay = as.integer(dep_delay))%>%
+  mutate(Season = case_when(
+  month == 12 | month <= 2 ~ "Winter",
+  month >= 3 & month <= 5 ~ "Spring",
+  month >= 6 &  month <= 8 ~ "Summer",
+  month >= 9 &  month <= 11 ~ "Fall"
+  )) %>%
+  mutate(hour = case_when(
+  sched_dep_time >= 2400 | sched_dep_time < 100 ~ 0,
+  sched_dep_time >= 100 & sched_dep_time < 200 ~ 1,
+  sched_dep_time >= 200 & sched_dep_time < 300 ~ 2,
+  sched_dep_time >= 300 & sched_dep_time < 400 ~ 3,
+  sched_dep_time >= 400 & sched_dep_time < 500 ~ 4,
+  sched_dep_time >= 500 & sched_dep_time < 600 ~ 5,
+  sched_dep_time >= 600 & sched_dep_time < 700 ~ 6,
+  sched_dep_time >= 700 & sched_dep_time < 800 ~ 7,
+  sched_dep_time >= 800 & sched_dep_time < 900 ~ 8,
+  sched_dep_time >= 900 & sched_dep_time < 1000 ~9,
+  sched_dep_time >= 1000 & sched_dep_time < 1100 ~ 10,
+  sched_dep_time >= 1100 & sched_dep_time < 1200 ~ 11,
+  sched_dep_time >= 1200 & sched_dep_time < 1300 ~ 12,
+  sched_dep_time >= 1300 & sched_dep_time < 1400 ~ 13,
+  sched_dep_time >= 1400 & sched_dep_time < 1500 ~ 14,
+  sched_dep_time >= 1500 & sched_dep_time < 1600 ~ 15,
+  sched_dep_time >= 1600 & sched_dep_time < 1700 ~ 16,
+  sched_dep_time >= 1700 & sched_dep_time < 1800 ~ 17,
+  sched_dep_time >= 1800 & sched_dep_time < 1900 ~ 18,
+  sched_dep_time >= 1900 & sched_dep_time < 2000 ~ 19,
+  sched_dep_time >= 2000 & sched_dep_time < 2100 ~ 20,
+  sched_dep_time >= 2100 & sched_dep_time < 2200 ~ 21,
+  sched_dep_time >= 2200 & sched_dep_time < 2300 ~ 22,
+  sched_dep_time >= 2300 & sched_dep_time < 2400 ~ 23
+  )) %>%
+  drop_na() 
 
-ggplot(flights_plot, aes(x = cancelled/n, y = mean_delay)) + 
-  geom_point(color = "blue") + 
-  geom_smooth(se = F, color = "blue")+
-  xlab("Proportion of Flights Delayed") +
-  ylab("Average Delay in Minutes")
+seasons = hw_df %>%
+  group_by(Season, hour) %>%
+  summarize(`Mean Delay` = mean(dep_delay))%>%
+  arrange(desc(`Mean Delay`))
+
+carrier = hw_df %>%
+  group_by(carrier, hour) %>%
+  summarize(`Mean Delay` = mean(dep_delay))%>%
+  arrange(desc(`Mean Delay`))
+
+departure = hw_df %>%
+  group_by(origin, hour) %>%
+  summarize(`Mean Delay` = mean(dep_delay))%>%
+  arrange(desc(`Mean Delay`))
+
+ggplot(data = seasons, aes(x = hour, y = `Mean Delay`, color = Season))+
+  geom_point()+
+  xlab("Hour (Military Time)")+
+  ylab("Mean Delay (Minutes)")+
+  ggtitle("Hourly Mean Delay by Season")
 ```
 
+The first major takeaway from this graph is that the time of day where you are most likely to experience longer delays is about 7 pm, or 1900 hours. This trend is consistent across all seasons, but some seasons clearly experience more mean delays than others. Fall continuously has the least delays. While the other three seasons are close during the morning hours, as the afternoon goes on it is clear that summer months have the longest delays, followed by spring and then winter.
+
+```{r}
+ggplot(data = carrier, aes(x = hour, y = `Mean Delay`))+
+  geom_point(aes(color = carrier)) +
+  theme(legend.position = "none")+
+  facet_wrap(vars(carrier))+
+  scale_y_log10()+
+  xlab("Hour (Military Time)")+
+  ylab("Mean Delay (Minutes)")+
+  ggtitle("Hourly Mean Delay by Carrier")
+```
+
+The above graphs reflect the trends shown in the first graph. While not all airlines have consistent flights throughout the day, there is enough data to see that mean flight delays typically grow as the day goes on, and peak between 7 and 9 pm, or 1900 and 2100 hours.
+
+```{r}
+ggplot(data = departure, aes(x = hour, y = `Mean Delay`, color = origin))+
+  geom_point()+
+  xlab("Hour (Military Time)")+
+  ylab("Mean Delay (Minutes)")+
+  ggtitle("Hourly Mean Delay by Departure Airport")
+
+```
+
+This is nearly the same graph as the first one. There is  clear upward trend in delay time as the day goes on, peaking between 7 and 9 pm. All three airports are similar, but as the day goes on Newark Airport distinguishes itself as having the longest delays.
+
+## Conclusion
+
+In conclusion, there is a clear trend that you should fly as early in the morning as possible. This trend is strong across airports and seasons, as well as most airlines. If you must fly between 7 and 9 pm, then you should avoid Newark Airport, try to fly during the fall or *maybe* winter. Airlines **OO** and **YV** have less data than the other airlines, but it appears that they actually reverse the trend, with the mean delay going *down* during the early evening.
