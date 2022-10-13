@@ -2,7 +2,7 @@
 title: "hw2"
 name: "Josh Cochrane"
 date: "10/18/2022"
-output: html_document
+output: md_document
 ---
 
 [My Github repo for Stat 433!](https://github.com/jjcochrane19/stat433)
